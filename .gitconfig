@@ -1,0 +1,258 @@
+# =============================================================================
+#  .gitconfig — Git Configuration
+#  Part of dotfiles-linux (https://github.com/razafimandimby-IT/dotfiles-linux)
+# =============================================================================
+
+[user]
+    name = Louis Denis RAZAFIMANDIMBY
+    email = razafimandimby@example.com
+    signingkey = ~/.ssh/id_ed25519.pub
+
+[init]
+    defaultBranch = main
+
+[core]
+    editor = vim
+    autocrlf = input
+    safecrlf = warn
+    whitespace = trailing-space,space-before-tab
+    excludesfile = ~/.gitignore_global
+    pager = less -F -X
+    fsmonitor = true
+    untrackedCache = true
+
+[color]
+    ui = auto
+    status = auto
+    branch = auto
+    diff = auto
+
+[color "branch"]
+    current = yellow reverse
+    local = green
+    remote = red
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
+
+[color "status"]
+    added = green
+    changed = yellow
+    untracked = red
+
+[commit]
+    gpgsign = false
+    verbose = true
+
+[push]
+    default = current
+    followTags = true
+    autoSetupRemote = true
+
+[pull]
+    rebase = true
+    ff = only
+
+[fetch]
+    prune = true
+    pruneTags = true
+    all = true
+
+[merge]
+    conflictStyle = zdiff3
+    tool = vimdiff
+    log = true
+
+[diff]
+    algorithm = histogram
+    colorMoved = default
+    indentHeuristic = true
+    renames = copies
+
+[diff "tool"]
+    prompt = false
+
+[rebase]
+    autoSquash = true
+    autoStash = true
+    updateRefs = true
+
+[rerere]
+    enabled = true
+    autoUpdate = true
+
+[help]
+    autocorrect = 10
+
+[url "git@github.com:"]
+    insteadOf = https://github.com/
+
+[url "git@gitlab.com:"]
+    insteadOf = https://gitlab.com/
+
+# ── Aliases ──────────────────────────────────────────────────────────────────
+
+[alias]
+
+    # Basic commands (shortcuts)
+    st = status -sb
+    co = checkout
+    br = branch
+    ci = commit
+    cp = cherry-pick
+    re = remote -v
+    di = diff
+    dic = diff --cached
+    dw = diff --word-diff
+    sh = show
+    lg = log --oneline --graph --decorate -20
+    lga = log --oneline --graph --decorate --all -30
+    lgp = log --oneline --graph --decorate --all --show-notes
+    ls-files = ls-files --others --exclude-standard
+
+    # Add / Remove
+    a = add
+    aa = add --all
+    ap = add -p
+    rm = rm -r
+    rm-cached = rm --cached -r
+    mv = mv -v
+
+    # Commit
+    cm = commit -m
+    cma = commit -am
+    ca = commit --amend
+    can = commit --amend --no-edit
+    cf = commit --fixup
+    cs = commit --squash
+
+    # Branch
+    ba = branch -a
+    bd = branch -d
+    bD = branch -D
+    bu = branch -u
+    bm = branch -m
+    bc = branch --show-current
+    bmerged = branch --merged
+    bnotmerged = branch --no-merged
+
+    # Stash
+    sl = stash list
+    ss = stash show -p
+    sa = stash apply
+    sp = stash pop
+    sd = stash drop
+    sc = stash clear
+    ssave = stash save
+
+    # Remote
+    rv = remote -v
+    ra = remote add
+    rr = remote rm
+    rn = remote rename
+    ru = remote update
+    rprune = remote prune origin
+
+    # Push / Pull
+    pu = push
+    pf = push --force-with-lease
+    pft = push --force-with-lease --tags
+    pt = push --tags
+    pl = pull --rebase
+    plff = pull --ff-only
+    pom = push origin main
+    pod = push origin develop
+
+    # Log
+    lol = log --graph --oneline --decorate --all
+    lol5 = log --graph --oneline --decorate --all -5
+    lol10 = log --graph --oneline --decorate --all -10
+    lol20 = log --graph --oneline --decorate --all -20
+    logf = log --pretty=fuller --stat
+    logs = log --stat
+    logd = log --diff-filter=D --summary
+    logsearch = log -S
+    loguser = log --author
+    logdate = log --after
+    logfile = log --follow -p --
+    shortlog = shortlog -sn
+
+    # Reset / Revert
+    res = reset
+    resh = reset --hard
+   ressoft = reset --soft
+    reseth = reset --hard HEAD
+    resetsoft = reset --soft HEAD~1
+    undo = reset --soft HEAD~1
+    redo = reset --hard HEAD@{1}
+    rev = revert
+    revno = revert --no-commit
+
+    # Cleanup
+    cleanup = !git branch --merged | grep -v \"\\*\\|main\\|master\\|develop\" | xargs -r git branch -d
+    cleanup-hard = !git branch | grep -v \"main\\|master\\|develop\" | xargs -r git branch -D
+    prune-branches = !git remote prune origin && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D
+    clean-merged = !git branch --merged main | grep -v \"\\*\\|main\\|master\" | xargs -r git branch -d
+
+    # Tag
+    tagl = tag -l | sort -V
+    tagd = tag -d
+    tagp = push origin --tags
+
+    # Diff
+    dsf = diff --stat
+    ds = diff --staged
+    dr = diff HEAD~1
+    dt = difftool
+    dm = diff --name-only
+    dmb = diff --name-only main...
+
+    # Worktree
+    wt = worktree list
+    wtadd = worktree add
+    wtrm = worktree remove
+    wtprune = worktree prune
+
+    # Misc
+    who = shortlog -sn --no-merges
+    ch = cherry -v
+    cof = "!f() { git checkout "$1" -- "$2"; }; f"
+    alias = !git config --global --list | grep alias | cut -c 7-
+    graph = log --graph --all --oneline --decorate
+    contributors = shortlog -sn --all
+    unstage = reset HEAD --
+    uncommit = reset --soft HEAD~1
+    amend = commit --amend --no-edit
+    pick = add -p
+    ignore = "!echo $1 >> .gitignore"
+    today = log --since=\"6am\" --author=\"$(git config user.name)\" --oneline
+    fresh = "!git clean -fd && git reset --hard HEAD"
+    current-branch = rev-parse --abbrev-ref HEAD
+    summary = stash list
+    overview = !git log --all --oneline --graph --decorate --simplify-by-decoration
+
+[alias]
+    # Rebase
+    rb = rebase
+    rbi = rebase -i
+    rbc = rebase --continue
+    rbs = rebase --skip
+    rba = rebase --abort
+
+[delta]
+    features = decorations
+    side-by-side = true
+    navigate = true
+    light = false
+    line-numbers = true
+    syntax-theme = Dracula
+
+[interactive]
+    singleKey = true
+
+[tag]
+    sort = version:refname
